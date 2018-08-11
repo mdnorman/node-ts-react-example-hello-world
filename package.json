@@ -25,6 +25,7 @@
     "server:development": "node dev-server.js"
   },
   "dependencies": {
+    "node-sass": "4.9.3",
     "react": "16.4.2",
     "react-dom": "16.4.2",
     "react-router-dom": "4.3.1"
