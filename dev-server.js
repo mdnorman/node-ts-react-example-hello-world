@@ -7,6 +7,7 @@ const options = {
   hot: true,
   host: 'localhost',
   disableHostCheck: true,
+  historyApiFallback: { index: '/' },
 };
 
 WebpackDevServer.addDevServerEntrypoints(config, options);
