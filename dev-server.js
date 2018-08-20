@@ -7,16 +7,7 @@ const options = {
   hot: true,
   host: 'localhost',
   disableHostCheck: true,
-  historyApiFallback: {
-    // Rewrite any 'files' to be at root
-    rewrites: [
-      {
-        from: /.*\/([^\/]+)\.([^\/]+)/,
-        to: ({ parsedUrl, match, request }) => `/${match[1]}.${match[2]}`,
-      },
-    ],
-    verbose: true,
-  },
+  historyApiFallback: true,
 };
 
 WebpackDevServer.addDevServerEntrypoints(config, options);
