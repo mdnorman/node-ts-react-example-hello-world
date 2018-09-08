@@ -1,4 +1,4 @@
-# CHANGEME
+# React Example Hello World
 
 ## Setup
 
