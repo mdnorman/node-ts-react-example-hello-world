@@ -1,4 +1,4 @@
-service: CHANGEME
+service: node-ts-react-example-hello-world
 
 plugins:
   - serverless-finch
@@ -31,11 +31,11 @@ custom:
   domainNameStage:
     test: test.${self:custom.baseDomainName}
     prod: www.${self:custom.baseDomainName}
-  baseDomainName: CHANGEME.com
+  baseDomainName: hello-world.${self:custom.hostedZone}
+  hostedZone: codesaplings.com
   logs:
-    bucket: CHANGEME
+    bucket: codesaplings-logs
     path: websites/${self:service.name}/${self:custom.stage}/cloudfront
-
 
 resources:
   Resources:
@@ -111,8 +111,8 @@ resources:
             TTL: 60
             ResourceRecords:
               - Fn::GetAtt:
-                - WebAppCloudFrontDistribution
-                - DomainName
+                  - WebAppCloudFrontDistribution
+                  - DomainName
 
   ## In order to print out the hosted domain via `serverless info` we need to define the DomainName output for CloudFormation
   Outputs:
