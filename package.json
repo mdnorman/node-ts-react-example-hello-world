@@ -30,7 +30,7 @@
     "deploy:prod": "serverless deploy -v --stage prod && serverless client deploy -v --no-confirm --no-delete-contents --stage prod"
   },
   "dependencies": {
-    "node-sass": "4.13.1",
+    "node-sass": "5.0.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-router-dom": "5.1.2"
