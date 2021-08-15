@@ -1,4 +1,4 @@
-# CHANGEME
+# React Sapling Hello World Example
 
 ## Setup
 
