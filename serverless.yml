@@ -13,7 +13,7 @@ provider:
 custom:
   stage: ${opt:stage, self:provider.stage}
   client:
-    bucketName: ${self:service.name}-${self:custom.stage}
+    bucketName: ${self:service}-${self:custom.stage}
     distributionFolder: dist
     indexDocument: index.html
     errorDocument: index.html
@@ -29,13 +29,14 @@ custom:
           value: no-cache
   domainName: ${self:custom.domainNameStage.${self:custom.stage}}
   domainNameStage:
+    dev: dev.${self:custom.baseDomainName}
     test: test.${self:custom.baseDomainName}
     prod: www.${self:custom.baseDomainName}
   baseDomainName: react-hello-world.${self:custom.hostedZone}
   hostedZone: codesaplings.com
   logs:
     bucket: codesaplings-logs
-    path: websites/${self:service.name}/${self:custom.stage}/cloudfront
+    path: websites/${self:service}/${self:custom.stage}/cloudfront
 
 resources:
   Resources:
@@ -44,6 +45,25 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.client.bucketName}
+
+    ## Cloudfront Origin Access Identity
+    WebAppCloudFrontOriginAccessIdentity:
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: ${self:service}-${self:custom.stage}-oai
+
+    WebAppS3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref WebAppS3Bucket
+        PolicyDocument:
+          Statement:
+            - Action: 's3:Get*'
+              Effect: Allow
+              Resource: 'arn:aws:s3:::${self:custom.client.bucketName}/*'
+              Principal:
+                CanonicalUser: !GetAtt WebAppCloudFrontOriginAccessIdentity.S3CanonicalUserId
 
     ## Specifying the CloudFront Distribution to serve your Web Application
     WebAppCloudFrontDistribution:
@@ -54,10 +74,9 @@ resources:
             - DomainName: ${self:custom.client.bucketName}.s3.amazonaws.com
               ## An identifier for the origin which must be unique within the distribution
               Id: WebApp
-              CustomOriginConfig:
-                HTTPPort: 80
-                HTTPSPort: 443
-                OriginProtocolPolicy: https-only
+              S3OriginConfig:
+                OriginAccessIdentity:
+                  !Join ['', ['origin-access-identity/cloudfront/', !Ref WebAppCloudFrontOriginAccessIdentity]]
           Enabled: 'true'
           HttpVersion: http2
           Aliases:
@@ -90,6 +109,7 @@ resources:
             AcmCertificateArn:
               Ref: WebAppCertificate
             SslSupportMethod: sni-only
+            MinimumProtocolVersion: TLSv1.2_2021
           Logging:
             IncludeCookies: false
             Bucket: ${self:custom.logs.bucket}.s3.amazonaws.com
