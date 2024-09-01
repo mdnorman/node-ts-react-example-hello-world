@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@types/jest": "29.5.12",
-    "@types/node": "18.19.42",
+    "@types/node": "18.19.47",
     "@types/react": "18.2.73",
     "@types/react-dom": "18.2.23",
     "@types/react-router-dom": "5.3.3",
